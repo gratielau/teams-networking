@@ -1,0 +1,18 @@
+table {
+  width: 100%;
+}
+
+table th,
+table td {
+  border: 1px solid blue;
+  padding: 5px;
+}
+
+table th {
+  background-color: blue;
+  color: white;
+}
+
+table td {
+  background-color: aliceblue;
+}

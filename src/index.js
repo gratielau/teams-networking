@@ -93,7 +93,6 @@ function initEvents() {
 }
 
 //===start====
-
 getTeamsRequest().then((teams) => {
   showTeams(teams);
 });

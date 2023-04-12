@@ -2,8 +2,8 @@ function getTeamsRequest() {
   return fetch("http://localhost:3000/teams-json", {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
-    },
+      "Content-Type": "application/json"
+    }
   }).then((r) => {
     return r.json();
   });
@@ -13,9 +13,9 @@ function createTeamsRequest(team) {
   return fetch("http://localhost:3000/teams-json/create", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify(team),
+    body: JSON.stringify(team)
   }).then((r) => r.json());
 }
 
@@ -23,9 +23,9 @@ function deleteTeamRequest(id) {
   return fetch("http://localhost:3000/teams-json/delete", {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify({ id }),
+    body: JSON.stringify({ id })
   }).then((r) => r.json());
 }
 
@@ -64,11 +64,11 @@ function formSubmit(e) {
     promotion,
     members,
     name: name,
-    url: url,
+    url: url
   };
 
   createTeamsRequest(team).then((status) => {
-    console.info("status", status);
+    //console.info("status", status);
     window.location.reload();
   });
 }
@@ -91,6 +91,8 @@ function initEvents() {
     }
   });
 }
+
+//===start====
 
 getTeamsRequest().then((teams) => {
   showTeams(teams);

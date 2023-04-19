@@ -96,15 +96,17 @@ function formSubmit(e) {
     team.id = editId;
     updateTeamRequest(team).then((status) => {
       if (status.success) {
-        loadTeams();
-        $("#editForm").reset();
+        loadTeams().then(() => {
+          $("#editForm").reset();
+        });
       }
     });
   } else {
     createTeamsRequest(team).then((status) => {
       if (status.success) {
-        loadTeams();
-        $("#editForm").reset();
+        loadTeams(() => {
+          $("#editForm").reset();
+        });
       }
     });
   }
@@ -171,11 +173,14 @@ function initEvents() {
   });
 }
 
-function loadTeams() {
-  getTeamsRequest().then((teams) => {
+function loadTeams(cb) {
+  return getTeamsRequest().then((teams) => {
     //window.teams = teams; // window.teams variabila globala se apeleaza asa pt ca au aceasi denumire
     allTeams = teams;
     showTeams(teams);
+    if (typeof cb === "function") {
+      cb();
+    }
   });
 }
 

@@ -113,12 +113,35 @@ function startEditTeam(id) {
   $("#url").value = team.url;
 }
 
+function searchTeams(search) {
+  search = search.toLowerCase();
+  return allTeams.filter((team) => {
+    if (team.members.toLowerCase().includes(search)) {
+      return true;
+    }
+    if (team.promotion.toLowerCase().includes(search)) {
+      return true;
+    }
+    return false;
+  });
+}
+
 function initEvents() {
   var form = $("#editForm");
   form.addEventListener("submit", formSubmit);
   form.addEventListener("reset", () => {
     editId = undefined;
   });
+
+  $("#search").addEventListener("input", (e) => {
+    //const search = $("#search").value;
+    const search = e.target.value;
+    console.info("search", search);
+    const teams = searchTeams(search);
+
+    showTeams(teams);
+  });
+
   $("table tbody").addEventListener("click", (e) => {
     if (e.target.matches("a.remove-btn")) {
       const id = e.target.dataset.id;

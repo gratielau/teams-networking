@@ -95,11 +95,17 @@ function formSubmit(e) {
   if (editId) {
     team.id = editId;
     updateTeamRequest(team).then((status) => {
-      if (status.success) window.location.reload();
+      if (status.success) {
+        loadTeams();
+        $("#editForm").reset();
+      }
     });
   } else {
     createTeamsRequest(team).then((status) => {
-      if (status.success) window.location.reload();
+      if (status.success) {
+        loadTeams();
+        $("#editForm").reset();
+      }
     });
   }
 }
@@ -110,13 +116,13 @@ function deleteTeam(id) {
     console.warn("removed?", status);
   }).then((status) => {
     if (status.success) {
-      window.location.reload();
+      loadTeams();
     }
   });
 }
 
 function startEditTeam(id) {
-  startEdit = id;
+  editId = id;
   const team = allTeams.find((team) => team.id == id);
 
   $("#promotion").value = team.promotion;
@@ -165,11 +171,14 @@ function initEvents() {
   });
 }
 
-//===start====
-getTeamsRequest().then((teams) => {
-  //window.teams = teams; // window.teams variabila globala se apeleaza asa pt ca au aceasi denumire
-  allTeams = teams;
-  showTeams(teams);
-});
+function loadTeams() {
+  getTeamsRequest().then((teams) => {
+    //window.teams = teams; // window.teams variabila globala se apeleaza asa pt ca au aceasi denumire
+    allTeams = teams;
+    showTeams(teams);
+  });
+}
 
+//===start====
+loadTeams();
 initEvents();

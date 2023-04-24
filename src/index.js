@@ -53,10 +53,7 @@ function updateTeamRequest(team) {
 }
 
 //functie pura
-function getTeamAsHTML(team) {
-  // const id = team.id;
-  // const url = team.url;
-  const { id, url, promotion } = team;
+function getTeamAsHTML({ id, url, promotion, members, name }) {
   let displayUrl = url;
   if (url.startsWith("https://")) {
     displayUrl = url.substring(8);
@@ -64,12 +61,12 @@ function getTeamAsHTML(team) {
   return `
     <tr>
         <td>${promotion}</td>
-        <td>${team.members}</td>
-        <td>${team.name}</td>
+        <td>${members}</td>
+        <td>${name}</td>
         <td><a href ="${url}" target="_blank"> ${displayUrl}</a></td>
         <td>
-        <a data-id="${team.id}" class = "link-btn remove-btn">✖</a>
-        <a data-id="${team.id}" class = "link-btn edit-btn" >&#9998;</a>
+        <a data-id="${id}" class = "link-btn remove-btn">✖</a>
+        <a data-id="${id}" class = "link-btn edit-btn" >&#9998;</a>
         </td>
     </tr>
     `;
@@ -152,8 +149,8 @@ function formSubmit(e) {
       }
     });
   } else {
-    createTeamsRequest(team).then((status) => {
-      if (status.success) {
+    createTeamsRequest(team).then(({ success, id }) => {
+      if (success) {
         //v1
         //window.location.reload();
         //v2
@@ -161,7 +158,7 @@ function formSubmit(e) {
         //   $("#editForm").reset();
         // });
         //V3
-        team.id = status.id;
+        team.id = id;
         //allTeams.push(team);
         allTeams = [...allTeams, team];
         showTeams(allTeams);
@@ -182,15 +179,15 @@ function deleteTeam(id) {
   });
 }
 
-function startEditTeam(id) {
-  editId = id;
-  const team = allTeams.find((team) => team.id == id);
-  const { promotion } = team;
+function startEditTeam(edit) {
+  editId = edit;
+  //const team = allTeams.find((team) => team.id == id);
+  const { promotion, members, name, url } = allTeams.find(({ id }) => id === edit);
 
   $("#promotion").value = promotion;
-  $("#members").value = team.members;
-  $("#name").value = team.name;
-  $("#url").value = team.url;
+  $("#members").value = members;
+  $("#name").value = name;
+  $("#url").value = url;
 }
 
 //functie pura

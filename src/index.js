@@ -82,7 +82,6 @@ function showTeams(teams) {
     return;
   }
 
-  //previewDisplayedTeams = teams;
   if (teams.length === previewDisplayedTeams.length) {
     var eqContent = teams.every((team, i) => team === previewDisplayedTeams[i]);
     if (eqContent) {

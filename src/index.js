@@ -54,12 +54,18 @@ function updateTeamRequest(team) {
 
 //functie pura
 function getTeamAsHTML(team) {
+  const id = team.id;
+  const url = team.url;
+  let displayUrl = url;
+  if (url.startsWith("https://")) {
+    displayUrl = url.substring(8);
+  }
   return `
     <tr>
         <td>${team.promotion}</td>
         <td>${team.members}</td>
         <td>${team.name}</td>
-        <td>${team.url}</td>
+        <td><a href ="${url}" target="_blank"> ${displayUrl}</a></td>
         <td>
         <a data-id="${team.id}" class = "link-btn remove-btn">✖</a>
         <a data-id="${team.id}" class = "link-btn edit-btn" >&#9998;</a>
@@ -68,14 +74,22 @@ function getTeamAsHTML(team) {
     `;
 }
 
-let previewDisplayedTeams;
+let previewDisplayedTeams = [];
 function showTeams(teams) {
   if (teams === previewDisplayedTeams) {
     console.info("same teams");
     return;
   }
-  previewDisplayedTeams = teams;
 
+  //previewDisplayedTeams = teams;
+  if (teams.length === previewDisplayedTeams.length) {
+    var eqContent = teams.every((team, i) => team === previewDisplayedTeams[i]);
+    if (eqContent) {
+      console.warn("same content");
+      return;
+    }
+  }
+  previewDisplayedTeams = teams;
   const html = teams.map(getTeamAsHTML);
   $("table tbody").innerHTML = html.join("");
 }
@@ -110,12 +124,29 @@ function formSubmit(e) {
         //   $("#editForm").reset();
         // });
         //v3
-        allTeams = [...allTeams];
-        var oldTeam = allTeams.find((t) => t.id === team.id);
-        oldTeam.promotion = team.promotion;
-        oldTeam.members = team.members;
-        oldTeam.name = team.name;
-        oldTeam.url = team.url;
+        ////allTeams = JSON.parse(JSON.stringify(allTeams)); deep clone (cloneaza tot array-ul si continutul, dar este costisitor)
+        // allTeams = [...allTeams];
+        // var oldTeam = allTeams.find((t) => t.id === team.id);
+        // oldTeam.promotion = team.promotion;
+        // oldTeam.members = team.members;
+        // oldTeam.name = team.name;
+        // oldTeam.url = team.url;
+
+        // allTeams = allTeams.map((t) => {
+        //   if (t.id == team.id) {
+        //     return team;
+        //   }
+        //   return t;
+        // });
+        allTeams = allTeams.map((t) => {
+          if (t.id == team.id) {
+            return {
+              ...t, //old props(eg. createdBy, CreatedAt)
+              ...team //info
+            };
+          }
+          return t;
+        });
         showTeams(allTeams);
         $("#editForm").reset();
       }

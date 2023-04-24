@@ -103,9 +103,21 @@ function formSubmit(e) {
     team.id = editId;
     updateTeamRequest(team).then((status) => {
       if (status.success) {
-        loadTeams().then(() => {
-          $("#editForm").reset();
-        });
+        //v1
+        //window.location.reload();
+        //v2
+        // loadTeams().then(() => {
+        //   $("#editForm").reset();
+        // });
+        //v3
+        allTeams = [...allTeams];
+        var oldTeam = allTeams.find((t) => t.id === team.id);
+        oldTeam.promotion = team.promotion;
+        oldTeam.members = team.members;
+        oldTeam.name = team.name;
+        oldTeam.url = team.url;
+        showTeams(allTeams);
+        $("#editForm").reset();
       }
     });
   } else {

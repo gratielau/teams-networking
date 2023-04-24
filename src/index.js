@@ -54,15 +54,16 @@ function updateTeamRequest(team) {
 
 //functie pura
 function getTeamAsHTML(team) {
-  const id = team.id;
-  const url = team.url;
+  // const id = team.id;
+  // const url = team.url;
+  const { id, url, promotion } = team;
   let displayUrl = url;
   if (url.startsWith("https://")) {
     displayUrl = url.substring(8);
   }
   return `
     <tr>
-        <td>${team.promotion}</td>
+        <td>${promotion}</td>
         <td>${team.members}</td>
         <td>${team.name}</td>
         <td><a href ="${url}" target="_blank"> ${displayUrl}</a></td>
@@ -185,8 +186,9 @@ function deleteTeam(id) {
 function startEditTeam(id) {
   editId = id;
   const team = allTeams.find((team) => team.id == id);
+  const { promotion } = team;
 
-  $("#promotion").value = team.promotion;
+  $("#promotion").value = promotion;
   $("#members").value = team.members;
   $("#name").value = team.name;
   $("#url").value = team.url;

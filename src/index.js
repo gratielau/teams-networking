@@ -220,6 +220,10 @@ function sleep(ms) {
 }
 
 (async () => {
+  await loadTeams();
+  await sleep(1000);
+  $("#editForm").classList.remove("loading-mask");
+
   console.info("1.start");
   // sleep(6000).then(() => {
   //   console.info("4. redy to do %o", "next job");
@@ -237,5 +241,9 @@ function sleep(ms) {
 // })();
 
 //===start====
-loadTeams();
+
+$("#editForm").classList.add("loading-mask");
+
+//loadTeams();
+
 initEvents();

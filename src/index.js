@@ -200,15 +200,15 @@ function initEvents() {
   });
 }
 
-function loadTeams(cb) {
-  return getTeamsRequest().then((teams) => {
-    //window.teams = teams; // window.teams variabila globala se apeleaza asa pt ca au aceasi denumire
-    allTeams = teams;
-    showTeams(teams);
-    if (typeof cb === "function") {
-      cb();
-    }
-  });
+async function loadTeams(cb) {
+  const teams = await getTeamsRequest();
+  //window.teams = teams; // window.teams variabila globala se apeleaza asa pt ca au aceasi denumire
+  allTeams = teams;
+  showTeams(teams);
+  if (typeof cb === "function") {
+    cb();
+  }
+  return teams;
 }
 
 function sleep(ms) {

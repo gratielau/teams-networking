@@ -112,42 +112,20 @@ async function formSubmit(e) {
 
   if (editId) {
     team.id = editId;
-    updateTeamRequest(team).then((status) => {
-      if (status.success) {
-        //v1
-        //window.location.reload();
-        //v2
-        // loadTeams().then(() => {
-        //   $("#editForm").reset();
-        // });
-        //v3
-        ////allTeams = JSON.parse(JSON.stringify(allTeams)); deep clone (cloneaza tot array-ul si continutul, dar este costisitor)
-        // allTeams = [...allTeams];
-        // var oldTeam = allTeams.find((t) => t.id === team.id);
-        // oldTeam.promotion = team.promotion;
-        // oldTeam.members = team.members;
-        // oldTeam.name = team.name;
-        // oldTeam.url = team.url;
-
-        // allTeams = allTeams.map((t) => {
-        //   if (t.id == team.id) {
-        //     return team;
-        //   }
-        //   return t;
-        // });
-        allTeams = allTeams.map((t) => {
-          if (t.id == team.id) {
-            return {
-              ...t, //old props(eg. createdBy, CreatedAt)
-              ...team //info
-            };
-          }
-          return t;
-        });
-        showTeams(allTeams);
-        $("#editForm").reset();
-      }
-    });
+    const { success } = await updateTeamRequest(team);
+    if (success) {
+      allTeams = allTeams.map((t) => {
+        if (t.id == team.id) {
+          return {
+            ...t, //old props(eg. createdBy, CreatedAt)
+            ...team //info
+          };
+        }
+        return t;
+      });
+      showTeams(allTeams);
+      $("#editForm").reset();
+    }
   } else {
     const { success, id } = await createTeamsRequest(team);
     if (success) {

@@ -249,11 +249,17 @@ function sleep(ms) {
   });
 }
 
-(() => {
-  console.info("start");
-  sleep(3000).then(() => {
-    console.info("redy to do %o", "next job");
-  });
+(async () => {
+  console.info("1.start");
+  // sleep(6000).then(() => {
+  //   console.info("4. redy to do %o", "next job");
+  // });
+  await sleep(4000);
+  console.info("4. redy to do %o", "next job");
+
+  console.warn("2.after sleep");
+  await sleep(5000);
+  console.info("3.await sleep");
 })();
 
 // (function () {

@@ -110,6 +110,8 @@ async function formSubmit(e) {
     url: url
   };
 
+  let changes = false;
+
   if (editId) {
     team.id = editId;
     const { success } = await updateTeamRequest(team);
@@ -123,25 +125,19 @@ async function formSubmit(e) {
         }
         return t;
       });
-      showTeams(allTeams);
-      $("#editForm").reset();
+      changes = true;
     }
   } else {
     const { success, id } = await createTeamsRequest(team);
     if (success) {
-      //v1
-      //window.location.reload();
-      //v2
-      // loadTeams(() => {
-      //   $("#editForm").reset();
-      // });
-      //V3
       team.id = id;
-      //allTeams.push(team);
       allTeams = [...allTeams, team];
-      showTeams(allTeams);
-      $("#editForm").reset();
+      changes = true;
     }
+  }
+  showTeams(allTeams);
+  if (changes) {
+    $("#editForm").reset();
   }
 }
 

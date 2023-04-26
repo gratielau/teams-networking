@@ -170,11 +170,11 @@ function formSubmit(e) {
 
 async function deleteTeam(id) {
   console.warn("delete", id);
-  const status = await deleteTeamRequest(id, (status) => {
-    console.warn("removed?", status);
-  });
-  if (status.success) {
-    loadTeams();
+  const { success } = await deleteTeamRequest(id);
+  if (success) {
+    //loadTeams();
+    allTeams = allTeams.filter((t) => t.id !== id);
+    showTeams(allTeams);
   }
 }
 

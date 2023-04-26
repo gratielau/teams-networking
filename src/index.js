@@ -168,15 +168,14 @@ function formSubmit(e) {
   }
 }
 
-function deleteTeam(id) {
+async function deleteTeam(id) {
   console.warn("delete", id);
-  deleteTeamRequest(id, (status) => {
+  const status = await deleteTeamRequest(id, (status) => {
     console.warn("removed?", status);
-  }).then((status) => {
-    if (status.success) {
-      loadTeams();
-    }
   });
+  if (status.success) {
+    loadTeams();
+  }
 }
 
 function startEditTeam(edit) {

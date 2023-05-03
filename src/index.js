@@ -137,7 +137,7 @@ function initEvents() {
     "input",
     debounce(function (e) {
       const search = this.value;
-      console.warn("debounce callback", search, e);
+      console.info("search", search);
       const teams = searchTeams(allTeams, search);
       showTeams(teams);
     }, 500)

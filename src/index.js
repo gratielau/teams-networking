@@ -1,5 +1,5 @@
 import { getTeamsRequest, createTeamsRequest, deleteTeamRequest, updateTeamRequest } from "./requests";
-import { sleep, $ } from "./utils";
+import { sleep, $, debounce } from "./utils";
 
 //window.teams = []; //nu merge var teams[] din cauza la webpack
 let allTeams = [];
@@ -133,14 +133,22 @@ function initEvents() {
     editId = undefined;
   });
 
-  $("#search").addEventListener("input", (e) => {
-    //const search = $("#search").value;
-    const search = e.target.value;
-    console.info("search", search);
-    const teams = searchTeams(allTeams, search);
-
-    showTeams(teams);
-  });
+  $("#search").addEventListener(
+    "input",
+    debounce(function (e) {
+      const search = this.value;
+      console.warn("debounce callback", search, e);
+      const teams = searchTeams(allTeams, search);
+      showTeams(teams);
+    }, 500)
+  );
+  // $("#search").addEventListener("input", (e) => {
+  //   //const search = $("#search").value;
+  //   const search = e.target.value;
+  //   console.info("search", search);
+  //   const teams = searchTeams(allTeams, search);
+  //   showTeams(teams);
+  // });
 
   $("table tbody").addEventListener("click", (e) => {
     if (e.target.matches("a.remove-btn")) {

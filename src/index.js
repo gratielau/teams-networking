@@ -1,56 +1,9 @@
+import { getTeamsRequest, createTeamsRequest, deleteTeamRequest, updateTeamRequest } from "./requests";
+import { sleep, $ } from "./utils";
+
 //window.teams = []; //nu merge var teams[] din cauza la webpack
 let allTeams = [];
 let editId;
-
-function getTeamsRequest() {
-  return fetch("http://localhost:3000/teams-json", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json"
-    }
-  }).then((r) => {
-    return r.json();
-  });
-}
-
-function createTeamsRequest(team) {
-  return fetch("http://localhost:3000/teams-json/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(team)
-  }).then((r) => r.json());
-}
-
-function deleteTeamRequest(id, callback) {
-  console.info(arguments[1]);
-  return fetch("http://localhost:3000/teams-json/delete", {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ id })
-  }).then((r) =>
-    r.json().then((status) => {
-      console.warn("before removed ", status);
-      if (typeof callback === "function") {
-        callback(status);
-      }
-      return status;
-    })
-  );
-}
-
-function updateTeamRequest(team) {
-  return fetch("http://localhost:3000/teams-json/update", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(team)
-  }).then((r) => r.json());
-}
 
 //functie pura
 function getTeamAsHTML({ id, url, promotion, members, name }) {
@@ -72,6 +25,7 @@ function getTeamAsHTML({ id, url, promotion, members, name }) {
     `;
 }
 
+//to do any chance to have this private?
 let previewDisplayedTeams = [];
 function showTeams(teams) {
   if (teams === previewDisplayedTeams) {
@@ -92,24 +46,10 @@ function showTeams(teams) {
   return true;
 }
 
-function $(selector) {
-  return document.querySelector(selector);
-}
-
 async function formSubmit(e) {
   e.preventDefault();
 
-  const promotion = $("#promotion").value;
-  const members = $("#members").value;
-  const name = $("#name").value;
-  const url = $("#url").value;
-
-  const team = {
-    promotion,
-    members,
-    name: name,
-    url: url
-  };
+  const team = getFormValues();
 
   if (editId) {
     team.id = editId;
@@ -132,11 +72,29 @@ async function formSubmit(e) {
       allTeams = [...allTeams, team];
     }
   }
-  // if (showTeams(allTeams)) {
-  //   $("#editForm").reset();
-  // }
-
   showTeams(allTeams) && $("#editForm").reset();
+}
+
+function getFormValues() {
+  const promotion = $("#promotion").value;
+  const members = $("#members").value;
+  const name = $("#name").value;
+  const url = $("#url").value;
+
+  const team = {
+    promotion,
+    members,
+    name: name,
+    url: url
+  };
+  return team;
+}
+
+function setFormValues({ promotion, members, name, url }) {
+  $("#promotion").value = promotion;
+  $("#members").value = members;
+  $("#name").value = name;
+  $("#url").value = url;
 }
 
 async function deleteTeam(id) {
@@ -149,15 +107,10 @@ async function deleteTeam(id) {
   }
 }
 
-function startEditTeam(edit) {
-  editId = edit;
-  //const team = allTeams.find((team) => team.id == id);
-  const { promotion, members, name, url } = allTeams.find(({ id }) => id === edit);
-
-  $("#promotion").value = promotion;
-  $("#members").value = members;
-  $("#name").value = name;
-  $("#url").value = url;
+function startEditTeam(id) {
+  editId = id;
+  const team = allTeams.find((t) => t.id == id);
+  setFormValues(team);
 }
 
 //functie pura
@@ -211,17 +164,11 @@ async function loadTeams(cb) {
   return teams;
 }
 
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, ms);
-  });
-}
-
+//===start====
 (async () => {
+  $("#editForm").classList.add("loading-mask");
   await loadTeams();
-  await sleep(1000);
+  await sleep(100);
   $("#editForm").classList.remove("loading-mask");
 
   console.info("1.start");
@@ -239,11 +186,5 @@ function sleep(ms) {
 // (function () {
 //   console.info("START");
 // })();
-
-//===start====
-
-$("#editForm").classList.add("loading-mask");
-
-//loadTeams();
 
 initEvents();

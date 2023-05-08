@@ -1,5 +1,5 @@
 import { getTeamsRequest, createTeamsRequest, deleteTeamRequest, updateTeamRequest } from "./requests";
-import { sleep, $, debounce } from "./utils";
+import { sleep, $, $$, debounce } from "./utils";
 //import debounce from "lodash/debounce";
 
 //window.teams = []; //nu merge var teams[] din cauza la webpack
@@ -14,6 +14,9 @@ function getTeamAsHTML({ id, url, promotion, members, name }) {
   }
   return `
     <tr>
+        <td>
+          <input type="checkbox" name="selected" value="${id}" /> 
+        </td>
         <td>${promotion}</td>
         <td>${members}</td>
         <td>${name}</td>
@@ -127,12 +130,29 @@ function searchTeams(teams, search) {
   });
 }
 
+async function removeSelected() {
+  const checkboxes = $$("#editForm input[name=selected]:checked");
+  console.warn("remove", checkboxes);
+  const ids = [...checkboxes].map((checkbox) => checkbox.value);
+  console.warn("ids", ids);
+  $("#editForm").classList.add("loading-mask");
+
+  const promises = ids.map((id) => deleteTeamRequest(id));
+  const results = await Promise.allSettled(promises);
+  console.warn("remove results", results);
+
+  await loadTeams();
+  $("#editForm").classList.remove("loading-mask");
+}
+
 function initEvents() {
   var form = $("#editForm");
   form.addEventListener("submit", formSubmit);
   form.addEventListener("reset", () => {
     editId = undefined;
   });
+
+  $("#removeSelected").addEventListener("click", removeSelected);
 
   $("#search").addEventListener(
     "input",
